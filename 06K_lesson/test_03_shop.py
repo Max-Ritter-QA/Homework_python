@@ -1,3 +1,4 @@
+import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -5,61 +6,67 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-driver.maximize_window()
-waiter = WebDriverWait(driver, 40)
-driver.get("https://www.saucedemo.com/")
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    driver.maximize_window()
+    yield driver
+    driver.quit()
 
-search_input_username = driver.find_element(By.CSS_SELECTOR, "#user-name")
-search_input_username.clear()
-search_input_username.send_keys("standard_user")
+def test_shop(driver):
+    waiter = WebDriverWait(driver, 40)
+    driver.get("https://www.saucedemo.com/")
 
-search_input_password = driver.find_element(By.CSS_SELECTOR, "#password")
-search_input_password.clear()
-search_input_password.send_keys("secret_sauce")
+    search_input_username = driver.find_element(By.CSS_SELECTOR, "#user-name")
+    search_input_username.clear()
+    search_input_username.send_keys("standard_user")
 
-driver.find_element(By.CSS_SELECTOR, "#login-button").click()
+    search_input_password = driver.find_element(By.CSS_SELECTOR, "#password")
+    search_input_password.clear()
+    search_input_password.send_keys("secret_sauce")
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#add-to-cart-sauce-labs-backpack"))
-).click()
+    driver.find_element(By.CSS_SELECTOR, "#login-button").click()
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#add-to-cart-sauce-labs-bolt-t-shirt"))
-).click()
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#add-to-cart-sauce-labs-backpack"))
+    ).click()
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#add-to-cart-sauce-labs-onesie"))
-).click()
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#add-to-cart-sauce-labs-bolt-t-shirt"))
+    ).click()
 
-driver.find_element(By.CSS_SELECTOR, "[data-test='shopping-cart-link']").click()
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#add-to-cart-sauce-labs-onesie"))
+    ).click()
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#checkout"))
-).click()
+    driver.find_element(By.CSS_SELECTOR, "[data-test='shopping-cart-link']").click()
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#first-name"))
-).send_keys("Max")
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#checkout"))
+    ).click()
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#last-name"))
-).send_keys("Ivanov")
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#first-name"))
+    ).send_keys("Max")
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#postal-code"))
-).send_keys("356773")
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#last-name"))
+    ).send_keys("Ivanov")
 
-driver.find_element(By.CSS_SELECTOR, "#continue").click()
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#postal-code"))
+    ).send_keys("356773")
 
-waiter.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "div.summary_total_label"))
-)
+    driver.find_element(By.CSS_SELECTOR, "#continue").click()
 
-total= driver.find_element(By.CSS_SELECTOR, "div.summary_total_label").text
+    waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "div.summary_total_label"))
+    )
 
-print(total)
+    total= driver.find_element(By.CSS_SELECTOR, "div.summary_total_label").text
 
-driver.quit()
+    print(total)
 
-assert total == 'Total: $58.29'
+    driver.quit()
+
+    assert total == 'Total: $58.29'
