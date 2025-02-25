@@ -12,7 +12,6 @@ def driver():
     yield browser
     browser.quit()
 
-
 @pytest.mark.parametrize("delay, number_one, operation, number_two, result", [
     (45, 7, "+", 8, 15),
     (3, 3, "-", 2, 1)

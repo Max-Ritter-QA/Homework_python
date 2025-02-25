@@ -25,7 +25,6 @@ def test_1_form(driver):
     driver.find_element(By.CSS_SELECTOR, "[name='company']").send_keys("SkyPro")
     driver.find_element(By.CSS_SELECTOR, "[type='submit']").click()
 
-
 # проверка поля подсвеченного красным
     red = driver.find_element(By.CSS_SELECTOR, "#zip-code").get_attribute("class")
     assert red == "alert py-2 alert-danger"
