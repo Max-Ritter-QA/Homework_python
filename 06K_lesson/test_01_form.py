@@ -37,7 +37,7 @@ def test_1_form(driver):
     phone = driver.find_element(By.CSS_SELECTOR, "#phone")
     city = driver.find_element(By.CSS_SELECTOR, "#city")
     country = driver.find_element(By.CSS_SELECTOR, "#country")
-    job =  driver.find_element(By.CSS_SELECTOR, "#job-position")
+    job = driver.find_element(By.CSS_SELECTOR, "#job-position")
     company = driver.find_element(By.CSS_SELECTOR, "#company")
 
     fields = [name,last_name, address, email, phone, city, country, job, company]
